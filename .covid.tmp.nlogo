@@ -1,4 +1,22 @@
+to setup
+  clear-all
+  create-turtles 100 [ setxy random-xcor random-ycor ]
+  reset-ticks
+end
 
+to go
+  move-turtles
+  tick
+end
+
+to move-turtles
+  ask turtles [
+    right random 360
+    forward 1
+  ]
+end
+
+t
 @#$#@#$#@
 GRAPHICS-WINDOW
 809
@@ -27,26 +45,11 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
-SLIDER
-0
-0
-0
-0
-NIL
-NIL
-0
-100
-50.0
-1
-1
-NIL
-HORIZONTAL
-
 BUTTON
-39
-43
-112
-76
+33
+37
+106
+70
 setup
 setup
 NIL
@@ -60,10 +63,10 @@ NIL
 1
 
 BUTTON
-124
-43
-187
-76
+118
+37
+181
+70
 go
 go
 NIL
@@ -77,15 +80,30 @@ NIL
 1
 
 SLIDER
-29
-121
-202
-154
+21
+103
+194
+136
 vaccination-rate
 vaccination-rate
 0
 100
 24.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+23
+156
+195
+189
+initial-cluster
+initial-cluster
+0
+10
+9.0
 1
 1
 NIL
