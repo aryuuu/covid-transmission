@@ -16,7 +16,9 @@ to move-turtles
   ]
 end
 
+to transmit-covid
 
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 809

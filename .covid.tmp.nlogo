@@ -1,4 +1,4 @@
-to setup
+1to setup
   clear-all
   create-turtles 100 [ setxy random-xcor random-ycor ]
   reset-ticks
@@ -16,7 +16,9 @@ to move-turtles
   ]
 end
 
-t
+to transmit-covid
+
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 809
@@ -69,7 +71,7 @@ BUTTON
 70
 go
 go
-NIL
+T
 1
 T
 OBSERVER
@@ -451,7 +453,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
