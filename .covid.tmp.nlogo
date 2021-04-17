@@ -1,16 +1,61 @@
-1to setup
+; positives are the infected people and negatives are the healthy ones
+breed [ positives positive ]
+breed [ negatives negative ]
+
+; energy is a point which positives lives depend on
+positives-own [ energy ]
+; vaccine
+negatives-own [ vaccine ]
+
+to setup
   clear-all
-  create-turtles 100 [ setxy random-xcor random-ycor ]
+  setup-patches
+  setup-negatives
+  setup-positives
   reset-ticks
 end
 
 to go
-  move-turtles
+  ; move-turtles
+  move-negatives
+  move-positives
   tick
 end
 
-to move-turtles
-  ask turtles [
+to setup-patches
+  ask patches [ set pcolor green ]
+end
+
+to setup-negatives
+  create-negatives 100 - initial-cluster * 10 [
+    setxy random-xcor random-ycor
+    set shape "face happy"
+    set color yellow
+    set vaccine random 100
+  ]
+end
+
+to setup-positives
+  create-positives initial-cluster * 10 [
+    setxy random-xcor random-ycor
+    set shape "face sad"
+    set color red
+    set energy 50
+  ]
+end
+
+
+to move-negatives
+  ask negatives [
+    right random 360
+    forward 1
+  ]
+end
+
+to move-positives
+  ask positives [
+    set energy energy - 1
+    if energy <= 0 [ die ]
     right random 360
     forward 1
   ]
@@ -90,7 +135,7 @@ vaccination-rate
 vaccination-rate
 0
 100
-24.0
+0.0
 1
 1
 NIL
@@ -105,11 +150,30 @@ initial-cluster
 initial-cluster
 0
 10
-9.0
+4.0
 1
 1
 NIL
 HORIZONTAL
+
+PLOT
+22
+244
+339
+417
+Infection and Vaccination Rate
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"infection" 1.0 0 -7858858 true "" "plot count positives"
+"vaccination" 1.0 0 -13840069 true "" "plot count negatives"
 
 @#$#@#$#@
 ## WHAT IS IT?
