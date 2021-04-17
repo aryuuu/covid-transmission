@@ -1,24 +1,21 @@
-; positives are the infected people and negatives are the healthy ones
-breed [ positives positive ]
-breed [ negatives negative ]
 
-; energy is a point which positives lives depend on
-positives-own [ energy ]
-; vaccine
-negatives-own [ vaccine ]
+turtles-own [
+  energy
+  vaccinated?
+  infected?
+]
 
 to setup
   clear-all
   setup-patches
-  setup-negatives
-  setup-positives
+  setup-turtles
   reset-ticks
 end
 
 to go
-  ; move-turtles
-  move-negatives
-  move-positives
+  if not any? turtles [ stop ]
+  if not any? turtles with [not infected?] [ user-message "Everyone is infected" stop]
+  move-turtles
   tick
 end
 
@@ -26,43 +23,43 @@ to setup-patches
   ask patches [ set pcolor green ]
 end
 
-to setup-negatives
-  create-negatives 100 - initial-cluster * 10 [
+to setup-turtles
+  create-turtles 100 [
     setxy random-xcor random-ycor
-    set shape "face happy"
-    set color yellow
-    set vaccine random 100
+    set energy 1000
+    let temp random 10
+    ifelse temp < initial-cluster [
+      set infected? true
+      set shape "face sad"
+      set color red
+    ]
+    [
+      set infected? false
+      set vaccinated? (random 100 < vaccination-rate)
+      set shape "face happy"
+      set color yellow
+    ]
   ]
 end
 
-to setup-positives
-  create-positives initial-cluster * 10 [
-    setxy random-xcor random-ycor
-    set shape "face sad"
-    set color red
-    set energy 50
+to move-turtles
+  ask turtles [
+    rt random 50
+    lt random 50
+    fd 1
+
+    let targets turtles in-radius 1
+    ask targets [
+      if not infected? and not vaccinated? [
+        let temp random 100
+        if temp < infection-chance [
+          set infected? true
+          set shape "face sad"
+          set color red
+        ]
+      ]
+    ]
   ]
-end
-
-
-to move-negatives
-  ask negatives [
-    right random 360
-    forward 1
-  ]
-end
-
-to move-positives
-  ask positives [
-    set energy energy - 1
-    if energy <= 0 [ die ]
-    right random 360
-    forward 1
-  ]
-end
-
-to transmit-covid
-
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -150,7 +147,7 @@ initial-cluster
 initial-cluster
 0
 10
-4.0
+1.0
 1
 1
 NIL
@@ -162,8 +159,8 @@ PLOT
 339
 417
 Infection and Vaccination Rate
-NIL
-NIL
+time
+count
 0.0
 10.0
 0.0
@@ -172,8 +169,23 @@ true
 true
 "" ""
 PENS
-"infection" 1.0 0 -7858858 true "" "plot count positives"
-"vaccination" 1.0 0 -13840069 true "" "plot count negatives"
+"infection" 1.0 0 -7858858 true "" "plot count turtles with [infected?]"
+"healthy" 1.0 0 -7500403 true "" "plot count turtles with [not infected?]"
+
+SLIDER
+230
+103
+407
+136
+infection-chance
+infection-chance
+0
+100
+7.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
