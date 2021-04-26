@@ -1,8 +1,8 @@
-
 turtles-own [
   energy
   vaccinated?
   infected?
+  infected-duration
 ]
 
 to setup
@@ -16,6 +16,7 @@ to go
   if not any? turtles [ stop ]
   if not any? turtles with [not infected?] [ user-message "Everyone is infected" stop]
   move-turtles
+  infect
   tick
 end
 
@@ -27,6 +28,8 @@ to setup-turtles
   create-turtles 100 [
     setxy random-xcor random-ycor
     set energy 1000
+    set infected-duration 0
+
     let temp random 10
     ifelse temp < initial-cluster [
       set infected? true
@@ -47,7 +50,11 @@ to move-turtles
     rt random 50
     lt random 50
     fd 1
+  ]
+end
 
+to infect
+  ask turtles with [infected?] [
     let targets turtles in-radius 1
     ask targets [
       if not infected? and not vaccinated? [
@@ -61,6 +68,25 @@ to move-turtles
     ]
   ]
 end
+
+to recover
+  ask turtles with [infected?] [
+    ifelse infected-duration > 14 [
+      let temp random 100
+      ifelse temp < recovery-chance [
+        set infected? false
+        set color yellow
+        set shape "face happy"
+        set infected-duration 0
+      ] [
+        set infected-duration infected-duration + 1
+      ]
+    ] [
+      set infected-duration infected-duration + 1
+    ]
+  ]
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 809
@@ -132,7 +158,7 @@ vaccination-rate
 vaccination-rate
 0
 100
-0.0
+11.0
 1
 1
 NIL
@@ -170,7 +196,7 @@ true
 "" ""
 PENS
 "infection" 1.0 0 -7858858 true "" "plot count turtles with [infected?]"
-"healthy" 1.0 0 -7500403 true "" "plot count turtles with [not infected?]"
+"healthy" 1.0 0 -14439633 true "" "plot count turtles with [not infected?]"
 
 SLIDER
 230
@@ -181,7 +207,44 @@ infection-chance
 infection-chance
 0
 100
-7.0
+48.0
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+233
+159
+389
+192
+disable-death
+disable-death
+1
+1
+-1000
+
+MONITOR
+241
+38
+298
+83
+Day
+[ticks % 24]
+17
+1
+11
+
+SLIDER
+440
+104
+615
+137
+recovery-chance
+recovery-chance
+0
+100
+49.0
 1
 1
 NIL

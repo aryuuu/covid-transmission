@@ -1,8 +1,8 @@
-
 turtles-own [
   energy
   vaccinated?
   infected?
+  infected-duration
 ]
 
 to setup
@@ -16,6 +16,7 @@ to go
   if not any? turtles [ stop ]
   if not any? turtles with [not infected?] [ user-message "Everyone is infected" stop]
   move-turtles
+  infect
   tick
 end
 
@@ -47,7 +48,11 @@ to move-turtles
     rt random 50
     lt random 50
     fd 1
+  ]
+end
 
+to infect
+  ask turtles with [infected?] [
     let targets turtles in-radius 1
     ask targets [
       if not infected? and not vaccinated? [
@@ -132,7 +137,7 @@ vaccination-rate
 vaccination-rate
 0
 100
-0.0
+11.0
 1
 1
 NIL
@@ -181,7 +186,44 @@ infection-chance
 infection-chance
 0
 100
-7.0
+100.0
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+233
+159
+389
+192
+disable-death
+disable-death
+1
+1
+-1000
+
+MONITOR
+241
+38
+298
+83
+Day
+[ticks % 24]
+17
+1
+11
+
+SLIDER
+440
+104
+615
+137
+recovery-chance
+recovery-chance
+0
+100
+49.0
 1
 1
 NIL
