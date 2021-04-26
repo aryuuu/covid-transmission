@@ -2,6 +2,7 @@ turtles-own [
   energy
   vaccinated?
   infected?
+  recovered?
   infected-duration
 ]
 
@@ -17,6 +18,7 @@ to go
   if not any? turtles with [not infected?] [ user-message "Everyone is infected" stop]
   move-turtles
   infect
+  recover
   tick
 end
 
@@ -28,9 +30,10 @@ to setup-turtles
   create-turtles 100 [
     setxy random-xcor random-ycor
     set energy 1000
-    set infected-duration 0
-
     let temp random 10
+    set infected-duration 0
+    set recovered? false
+
     ifelse temp < initial-cluster [
       set infected? true
       set shape "face sad"
@@ -54,7 +57,9 @@ to move-turtles
 end
 
 to infect
-  ask turtles with [infected?] [
+  ask turtles with [infected? and not recovered?] [
+    set infected-duration infected-duration + 1
+
     let targets turtles in-radius 1
     ask targets [
       if not infected? and not vaccinated? [
@@ -71,28 +76,22 @@ end
 
 to recover
   ask turtles with [infected?] [
-    ifelse infected-duration > 14 [
-      let temp random 100
-      ifelse temp < recovery-chance [
-        set infected? false
-        set color yellow
-        set shape "face happy"
+    if (infected-duration > 14) [
+      if ((random 100) < recovery-chance) [
         set infected-duration 0
-      ] [
-        set infected-duration infected-duration + 1
+        set recovered? true
+        set shape "face happy"
+        set color yellow
       ]
-    ] [
-      set infected-duration infected-duration + 1
     ]
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
-809
-28
-1246
-466
+409
+17
+846
+455
 -1
 -1
 13.0
@@ -165,10 +164,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-23
-156
-195
-189
+22
+155
+194
+188
 initial-cluster
 initial-cluster
 0
@@ -180,10 +179,10 @@ NIL
 HORIZONTAL
 
 PLOT
-22
-244
-339
-417
+23
+303
+340
+476
 Infection and Vaccination Rate
 time
 count
@@ -195,29 +194,29 @@ true
 true
 "" ""
 PENS
-"infection" 1.0 0 -7858858 true "" "plot count turtles with [infected?]"
-"healthy" 1.0 0 -14439633 true "" "plot count turtles with [not infected?]"
+"infection" 1.0 0 -7858858 true "" "plot count turtles with [infected? and not recovered?]"
+"healthy" 1.0 0 -7500403 true "" "plot count turtles with [not infected? or recovered?]"
 
 SLIDER
-230
+202
 103
-407
+379
 136
 infection-chance
 infection-chance
 0
 100
-48.0
+69.0
 1
 1
 NIL
 HORIZONTAL
 
 SWITCH
-233
-159
-389
-192
+26
+206
+182
+239
 disable-death
 disable-death
 1
@@ -236,15 +235,15 @@ Day
 11
 
 SLIDER
-440
-104
-615
-137
+201
+157
+376
+190
 recovery-chance
 recovery-chance
 0
 100
-49.0
+9.0
 1
 1
 NIL
