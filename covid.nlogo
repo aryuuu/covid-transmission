@@ -41,9 +41,17 @@ to setup-turtles
     ]
     [
       set infected? false
-      set vaccinated? (random 100 < vaccination-rate)
-      set shape "face happy"
+      let temp2 random 100
+      ifelse temp2 < vaccination-rate [
+        set shape "face happy"
+      set color white
+      ]
+      [
+        set shape "face happy"
       set color yellow
+      ]
+      set vaccinated? (temp2 < vaccination-rate)
+
     ]
   ]
 end
@@ -157,7 +165,7 @@ vaccination-rate
 vaccination-rate
 0
 100
-11.0
+50.0
 1
 1
 NIL
@@ -206,7 +214,7 @@ infection-chance
 infection-chance
 0
 100
-69.0
+50.0
 1
 1
 NIL
@@ -232,7 +240,7 @@ recovery-chance
 recovery-chance
 0
 100
-9.0
+60.0
 1
 1
 NIL
